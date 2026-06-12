@@ -10,6 +10,8 @@
         const res = await fetch(
         `https://api.telegram.org/bot${token}/getUpdates`
     );
+          const chatId =
+        "5535326319";
     const data = await res.json();
     const latest =
     data.result[
@@ -18,14 +20,14 @@
         if(latest.message.text==="hi"){
             const txt="hello";
 
-    const chatId =
-        "5535326319";
-
-    fetch(
+    await fetch(
         `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${txt}`
     );
         }
           else{
+            await fetch(
+        `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=hell`
+    );
           alert("hi");
           }
         }
