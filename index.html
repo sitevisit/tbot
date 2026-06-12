@@ -6,6 +6,7 @@
     <body>
       <script>
         async function sendT(){
+        const token ="8841208085:AAEjZPXO8cZ62MuH62B1t0dSN_HP7WZseWw";
         const res = await fetch(
         `https://api.telegram.org/bot${token}/getUpdates`
     );
@@ -16,14 +17,15 @@
     ];
         if(latest.message.text==="hi"){
             const txt="hello";
-            const token ="8841208085:AAEjZPXO8cZ62MuH62B1t0dSN_HP7WZseWw";
 
     const chatId =
         "5535326319";
 
     fetch(
         `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${txt}`
-    );}
+    );
+        }
+          alert("hi);
         }
         sendT();
         setInterval(sendT,5000);
