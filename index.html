@@ -23,12 +23,13 @@
     await fetch(
         `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${txt}`
     );
+          console.log("done");
         }
           else{
             await fetch(
         `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=hell`
     );
-          alert("hi");
+        console.log("sent");
           }
         }
         sendT();
