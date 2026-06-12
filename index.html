@@ -5,6 +5,7 @@
     </head>
     <body>
       <script>
+        async function sendT(){
         const res = await fetch(
         `https://api.telegram.org/bot${token}/getUpdates`
     );
@@ -23,6 +24,7 @@
     fetch(
         `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${txt}`
     );}
+        }
       </script>
     </body>
   </html>
