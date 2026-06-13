@@ -1,4 +1,8 @@
-<!DOCTYPE html> <html> <head> <meta charset="UTF-8"> <title>Telegram Bot Dashboard</title>
+<!DOCTYPE html> 
+<html> 
+<head> 
+ <meta charset="UTF-8"> 
+ <title>Telegram Bot Dashboard</title>
 <style>
 *{ box-sizing:border-box; font-family:Arial,sans-serif; }
 body{ margin:20px; }
@@ -346,6 +350,20 @@ try {
 
 }
 
+}
+ function loadData() {
+
+  const script = document.createElement("script");
+
+  script.src =
+    SCRIPT_URL +
+    "?action=read&callback=handleData";
+
+  document.body.appendChild(script);
+}
+
+function handleData(res) {
+  console.log(res);
 }
 
 setInterval(
