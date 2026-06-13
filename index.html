@@ -39,48 +39,32 @@ th{ background:#f5f5f5; }
 </div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD43XyN9FS4oRjIyO0e-0dAwnbirFvtK5UhSdnZ4T2HtxKed0PyFgUAhco2FwRanhO/exec";
-async function loadBrain(){
-const res =
-await fetch(
-SCRIPT_URL +
-"?action=read"
-);
-const data =
-await res.json();
-const tbody =
-document.getElementById(
-"brainTable"
-);
-tbody.innerHTML = "";
-data.forEach(item=>{
-tbody.innerHTML += `
-<tr>
-<td>${item.message}</td>
-<td>${item.reply}</td>
-<td>${item.type}</td>
-<td>
-<button
-onclick="
- editReply(
- '${item.message}',
- '${item.reply}',
- '${item.type}'
- )
- ">
-Edit
-</button>
-<button
-onclick="
- deleteReply(
- '${item.message}'
- )
- ">
-Delete
-</button>
-</td>
-</tr>
-`;
-});
+async function loadBrain() {
+
+  const res =
+    await fetch(SCRIPT_URL + "?action=read");
+
+  const data =
+    await res.json();
+
+  const arr =
+    Array.isArray(data) ? data : [];
+
+  const tbody =
+    document.getElementById("brainTable");
+
+  tbody.innerHTML = "";
+
+  arr.forEach(item => {
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${item.message}</td>
+        <td>${item.reply}</td>
+        <td>${item.type}</td>
+      </tr>
+    `;
+  });
 }
 async function addReply(){
 const message =
@@ -160,33 +144,33 @@ message
 )
 .then(()=>loadBrain());
 }
-async function loadLogs(){
-const res =
-await fetch(
-SCRIPT_URL +
-"?action=logs"
-);
-const data =
-await res.json();
-const tbody =
-document.getElementById(
-"logsTable"
-);
-tbody.innerHTML = "";
-data.forEach(
-(row,index)=>{
-if(index===0){
-return;
-}
-tbody.innerHTML += `
-<tr>
-<td>${row[0]}</td>
-<td>${row[1]}</td>
-<td>${row[2]}</td>
-<td>${row[3]}</td>
-</tr>
-`;
-});
+async function loadLogs() {
+
+  const res =
+    await fetch(SCRIPT_URL + "?action=logs");
+
+  const data =
+    await res.json();
+
+  const arr =
+    Array.isArray(data) ? data : [];
+
+  const tbody =
+    document.getElementById("logsTable");
+
+  tbody.innerHTML = "";
+
+  arr.forEach(row => {
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${row[0]}</td>
+        <td>${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+      </tr>
+    `;
+  });
 }
  let lastUpdateId = 0;
 
