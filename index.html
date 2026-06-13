@@ -18,11 +18,11 @@ function getReply(msg){
 
     msg = msg.toLowerCase().trim();
 
-    if(msg === "hi") return "Hello!";
-    if(msg === "hello") return "Hello!";
-    if(msg === "how are you") return "I am fine.";
-    if(msg === "bye") return "Goodbye.";
-    if(msg === "/start") return "welcome to vinay chat bot";
+    if(msg === "hi") console.log("Hello"); return "Hello!";
+    if(msg === "hello") console.log("Hello!"); return "Hello!";
+    if(msg === "how are you") console.log("I am fine"); return "I am fine.";
+    if(msg === "bye") console.log("Goodbye"); return "Goodbye.";
+    if(msg === "/start") console.log("welcome to vinay chat bot"); return "welcome to vinay chat bot";
 
     return "I don't understand that.";
 }
