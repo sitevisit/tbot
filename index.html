@@ -1,97 +1,196 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Telegram Bot Controller</title>
-</head>
-<body>
-
-<h1>Telegram Bot Running</h1>
-<div id="status"></div>
-
+<!DOCTYPE html> <html> <head> <meta charset="UTF-8"> <title>Telegram Bot Dashboard</title>
+<style>
+*{ box-sizing:border-box; font-family:Arial,sans-serif; }
+body{ margin:20px; }
+.card{ border:1px solid #ccc; border-radius:10px; padding:15px; margin-bottom:20px; }
+input,select{ padding:8px; margin:5px; }
+button{ padding:8px 12px; cursor:pointer; }
+table{ width:100%; border-collapse:collapse; }
+th,td{ border:1px solid #ccc; padding:8px; text-align:left; }
+th{ background:#f5f5f5; }
+</style>
+</head> <body>
+<h1>Telegram Bot Dashboard</h1>
+<div class="card">
+<h2>Add / Update Reply</h2>
+<input id="msg" placeholder="Message">
+<input id="reply" placeholder="Reply">
+<select id="type"> <option value="exact">exact</option> <option value="contains">contains</option> </
+select>
+<button onclick="addReply()">Add</button>
+</div>
+<div class="card">
+<h2>Bot Knowledge</h2>
+1
+<table>
+<thead> <tr> <th>Message</th> <th>Reply</th> <th>Type</th> <th>Actions</th> </tr> </thead>
+<tbody id="brainTable"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>Logs</h2>
+<table>
+<thead> <tr> <th>Time</th> <th>User</th> <th>Message</th> <th>Reply</th> </tr> </thead>
+<tbody id="logsTable"></tbody>
+</table>
+</div>
 <script>
-
-const BOT_TOKEN = "8841208085:AAEjZPXO8cZ62MuH62B1t0dSN_HP7WZseWw";
-
-let lastUpdateId = 0;
-
-function getReply(msg){
-
-    msg = msg.toLowerCase().trim();
-
-    if(msg === "hi"){ console.log("Hello"); return "Hello!";}
-    if(msg === "hello"){ console.log("Hello!"); return "Hello!";}
-    if(msg === "how are you"){ console.log("I am fine"); return "I am fine.";}
-    if(msg === "bye"){ console.log("Goodbye"); return "Goodbye.";}
-    if(msg === "/start"){ console.log("welcome to vinay chat bot"); return "welcome to vinay chat bot";}
-
-    return "I don't understand that.";
-}
-
-async function sendMessage(chatId, text){
-
-    await fetch(
-        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`
-    );
-
-}
-
-async function checkMessages(){
-
-    try{
-
-        const response = await fetch(
-            `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`
-        );
-
-        const data = await response.json();
-
-        if(data.result.length === 0){
-            return;
-        }
-
-        const latest =
-            data.result[data.result.length - 1];
-
-        if(latest.update_id > lastUpdateId){
-
-            lastUpdateId = latest.update_id;
-
-            const chatId =
-                latest.message.chat.id;
-
-            const msg =
-                latest.message.text || "";
-
-            const reply =
-                getReply(msg);
-
-            await sendMessage(
-                chatId,
-                reply
-            );
-
-            document.getElementById(
-                "status"
-            ).innerHTML =
-            "Processed: " + msg;
-
-        }
-
-    }
-    catch(err){
-
-        console.log(err);
-
-    }
-
-}
-
-setInterval(
-    checkMessages,
-    5000
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD43XyN9FS4oRjIyO0e-0dAwnbirFvtK5UhSdnZ4T2HtxKed0PyFgUAhco2FwRanhO/exec";
+async function loadBrain(){
+const res =
+await fetch(
+SCRIPT_URL +
+"?action=read"
 );
-
+const data =
+await res.json();
+const tbody =
+document.getElementById(
+"brainTable"
+);
+tbody.innerHTML = "";
+2
+data.forEach(item=>{
+tbody.innerHTML += `
+<tr>
+<td>${item.message}</td>
+<td>${item.reply}</td>
+<td>${item.type}</td>
+<td>
+<button
+onclick="
+ editReply(
+ '${item.message}',
+ '${item.reply}',
+ '${item.type}'
+ )
+ ">
+Edit
+</button>
+<button
+onclick="
+ deleteReply(
+ '${item.message}'
+ )
+ ">
+Delete
+</button>
+</td>
+</tr>
+`;
+});
+}
+async function addReply(){
+const message =
+document
+.getElementById("msg")
+.value;
+const reply =
+document
+.getElementById("reply")
+3
+.value;
+const type =
+document
+.getElementById("type")
+.value;
+await fetch(
+SCRIPT_URL +
+"?action=add" +
+"&message=" +
+encodeURIComponent(
+message
+) +
+"&reply=" +
+encodeURIComponent(
+reply
+) +
+"&type=" +
+encodeURIComponent(
+type
+)
+);
+loadBrain();
+}
+function editReply( message, reply, type ){
+const newReply =
+prompt(
+"New Reply",
+reply
+);
+if(
+newReply === null
+){
+return;
+4
+}
+fetch(
+SCRIPT_URL +
+"?action=update" +
+"&message=" +
+encodeURIComponent(
+message
+) +
+"&reply=" +
+encodeURIComponent(
+newReply
+) +
+"&type=" +
+encodeURIComponent(
+type
+)
+)
+.then(()=>loadBrain());
+}
+function deleteReply( message ){
+if(
+!confirm(
+"Delete?"
+)
+){
+return;
+}
+fetch(
+SCRIPT_URL +
+"?action=delete" +
+"&message=" +
+encodeURIComponent(
+5
+message
+)
+)
+.then(()=>loadBrain());
+}
+async function loadLogs(){
+const res =
+await fetch(
+SCRIPT_URL +
+"?action=logs"
+);
+const data =
+await res.json();
+const tbody =
+document.getElementById(
+"logsTable"
+);
+tbody.innerHTML = "";
+data.forEach(
+(row,index)=>{
+if(index===0){
+return;
+}
+tbody.innerHTML += `
+<tr>
+<td>${row[0]}</td>
+<td>${row[1]}</td>
+<td>${row[2]}</td>
+<td>${row[3]}</td>
+</tr>
+`;
+});
+}
+6
+loadBrain(); loadLogs();
+setInterval( loadLogs, 5000 );
 </script>
-
-</body>
-</html>
+</body> </html>
