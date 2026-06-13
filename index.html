@@ -54,12 +54,12 @@ async function checkMessages(){
         if(latest.update_id > lastUpdateId){
 
             lastUpdateId = latest.update_id;
-            const nam = latest.message.from.first_name+" "+latest.message.from.last_name+"\n";
+            const nam = latest.message.from.first_name+" "+latest.message.from.last_name;
             const chatId =
                 latest.message.chat.id;
 
             const msg =
-                nam+latest.message.text || "";
+                latest.message.text || "";
 
             const reply =
                 getReply(msg);
@@ -68,7 +68,7 @@ async function checkMessages(){
                 chatId,
                 reply
             );
-
+            console.log(nam);
             document.getElementById(
                 "status"
             ).innerHTML =
