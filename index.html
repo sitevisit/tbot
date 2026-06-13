@@ -184,6 +184,175 @@ tbody.innerHTML += `
 `;
 });
 }
+ let lastUpdateId = 0;
+
+async function checkTelegram() {
+
+try {
+
+    const response =
+        await fetch(
+            SCRIPT_URL +
+            "?action=updates"
+        );
+
+    const data =
+        await response.json();
+
+    if (
+        !data.result ||
+        data.result.length === 0
+    ) {
+        return;
+    }
+
+    for (const update of data.result) {
+
+        if (
+            update.update_id <=
+            lastUpdateId
+        ) {
+            continue;
+        }
+
+        lastUpdateId =
+            update.update_id;
+
+        if (
+            !update.message
+        ) {
+            continue;
+        }
+
+        const chatId =
+            update.message.chat.id;
+
+        const username =
+            update.message.from.username ||
+            update.message.from.first_name ||
+            "Unknown";
+
+        const userMessage =
+            (
+                update.message.text ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
+
+        const brainResponse =
+            await fetch(
+                SCRIPT_URL +
+                "?action=read"
+            );
+
+        const brain =
+            await brainResponse.json();
+
+        let reply =
+            null;
+
+        for (
+            const item of brain
+        ) {
+
+            const keyword =
+                item.message
+                .toLowerCase();
+
+            if (
+                item.type ===
+                "exact"
+            ) {
+
+                if (
+                    userMessage ===
+                    keyword
+                ) {
+
+                    reply =
+                        item.reply;
+
+                    break;
+
+                }
+
+            }
+
+            if (
+                item.type ===
+                "contains"
+            ) {
+
+                if (
+                    userMessage
+                    .includes(
+                        keyword
+                    )
+                ) {
+
+                    reply =
+                        item.reply;
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+        if (
+            !reply
+        ) {
+            continue;
+        }
+
+        await fetch(
+
+            SCRIPT_URL +
+
+            "?action=send" +
+
+            "&chatId=" +
+            encodeURIComponent(
+                chatId
+            ) +
+
+            "&text=" +
+            encodeURIComponent(
+                reply
+            )
+
+        );
+
+        console.log(
+            username +
+            " => " +
+            userMessage +
+            " => " +
+            reply
+        );
+
+    }
+
+    loadLogs();
+
+} catch (error) {
+
+    console.error(
+        error
+    );
+
+}
+
+}
+
+setInterval(
+checkTelegram,
+5000
+);
+
 loadBrain(); loadLogs();
 setInterval( loadLogs, 5000 );
 </script>
