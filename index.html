@@ -1,40 +1,96 @@
-<DOCTYPE html>
-  <html>
-    <head>
-      <title>bot response</title>
-    </head>
-    <body>
-      <script>
-        async function sendT(){
-        const token ="8841208085:AAEjZPXO8cZ62MuH62B1t0dSN_HP7WZseWw";
-        const res = await fetch(
-        `https://api.telegram.org/bot${token}/getUpdates`
-    );
-          const hi="hi";
-          const chatId =
-        "5535326319";
-    const data = await res.json();
-    const latest =
-    data.result[
-        data.result.length - 1
-    ];
-        if(latest.message.text===hi){
-            const txt="hello";
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Bot Controller</title>
+</head>
+<body>
+
+<h1>Telegram Bot Running</h1>
+<div id="status"></div>
+
+<script>
+
+const BOT_TOKEN = "YOUR_BOT_TOKEN";
+
+let lastUpdateId = 0;
+
+function getReply(msg){
+
+    msg = msg.toLowerCase().trim();
+
+    if(msg === "hi") return "Hello!";
+    if(msg === "hello") return "Hello!";
+    if(msg === "how are you") return "I am fine.";
+    if(msg === "bye") return "Goodbye.";
+
+    return "I don't understand that.";
+}
+
+async function sendMessage(chatId, text){
 
     await fetch(
-        `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${txt}`
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`
     );
-          console.log("done");
+
+}
+
+async function checkMessages(){
+
+    try{
+
+        const response = await fetch(
+            `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`
+        );
+
+        const data = await response.json();
+
+        if(data.result.length === 0){
+            return;
         }
-          else{
-            await fetch(
-        `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=hell`
-    );
-        console.log("sent");
-          }
+
+        const latest =
+            data.result[data.result.length - 1];
+
+        if(latest.update_id > lastUpdateId){
+
+            lastUpdateId = latest.update_id;
+
+            const chatId =
+                latest.message.chat.id;
+
+            const msg =
+                latest.message.text || "";
+
+            const reply =
+                getReply(msg);
+
+            await sendMessage(
+                chatId,
+                reply
+            );
+
+            document.getElementById(
+                "status"
+            ).innerHTML =
+            "Processed: " + msg;
+
         }
-        sendT();
-        setInterval(sendT,5000);
-      </script>
-    </body>
-  </html>
+
+    }
+    catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+setInterval(
+    checkMessages,
+    5000
+);
+
+</script>
+
+</body>
+</html>
