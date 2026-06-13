@@ -18,11 +18,11 @@ function getReply(msg){
 
     msg = msg.toLowerCase().trim();
 
-    if(msg === "hi"){ console.log("Hello!"); return "Hello!";}
-    if(msg === "hello"){ console.log("Hi there"); return "Hi there";}
-    if(msg === "how are you"){console.log("I am fine"); return "I am fine.";}
-    if(msg === "bye"){console.log("Goodbye."); return "Goodbye.";}
-    console.log("I don't understand that.");
+    if(msg === "hi") return "Hello!";
+    if(msg === "/start") return "welcome to vinay chat bot";
+    if(msg === "hello") return "Hi there";
+    if(msg === "how are you") return "I am fine.";
+    if(msg === "bye") return "Goodbye.";
     return "I don't understand that.";
 }
 
@@ -54,7 +54,7 @@ async function checkMessages(){
         if(latest.update_id > lastUpdateId){
 
             lastUpdateId = latest.update_id;
-            const nam = latest.message.from.first_name+" "+latest.message.from.last_name;
+            const fname = latest.message.from.first_name+" "+latest.message.from.last_name;
             const chatId =
                 latest.message.chat.id;
 
@@ -63,16 +63,15 @@ async function checkMessages(){
 
             const reply =
                 getReply(msg);
-
+            console.log("sent to "+fname);
             await sendMessage(
                 chatId,
                 reply
             );
-            console.log(nam);
             document.getElementById(
                 "status"
-            ).innerHTML =
-            "Processed: " + msg;
+            ).innerHTML+ =
+            "Recieved: " + msg+"<br>By"+fname+"<br>Sent: "+reply+"<br>";
 
         }
 
