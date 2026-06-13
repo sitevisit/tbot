@@ -21,7 +21,6 @@ select>
 </div>
 <div class="card">
 <h2>Bot Knowledge</h2>
-1
 <table>
 <thead> <tr> <th>Message</th> <th>Reply</th> <th>Type</th> <th>Actions</th> </tr> </thead>
 <tbody id="brainTable"></tbody>
@@ -49,7 +48,6 @@ document.getElementById(
 "brainTable"
 );
 tbody.innerHTML = "";
-2
 data.forEach(item=>{
 tbody.innerHTML += `
 <tr>
@@ -88,7 +86,6 @@ document
 const reply =
 document
 .getElementById("reply")
-3
 .value;
 const type =
 document
@@ -122,7 +119,6 @@ if(
 newReply === null
 ){
 return;
-4
 }
 fetch(
 SCRIPT_URL +
@@ -155,7 +151,6 @@ SCRIPT_URL +
 "?action=delete" +
 "&message=" +
 encodeURIComponent(
-5
 message
 )
 )
@@ -189,7 +184,6 @@ tbody.innerHTML += `
 `;
 });
 }
-6
 loadBrain(); loadLogs();
 setInterval( loadLogs, 5000 );
 </script>
