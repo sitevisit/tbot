@@ -47,27 +47,29 @@ let lastUpdateId = 0;
 ========================= */
 async function loadBrain() {
 
-  const res = await fetch(SCRIPT_URL + "?action=read");
-  const data = await res.json();
+  try {
+    const res = await fetch(SCRIPT_URL + "?action=read");
+    const data = await res.json();
 
-  const arr = Array.isArray(data) ? data : [];
+    const arr = Array.isArray(data) ? data : [];
 
-  const tbody = document.getElementById("brainTable");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("brainTable");
+    tbody.innerHTML = "";
 
-  arr.forEach(item => {
+    arr.forEach(item => {
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${item.message}</td>
-        <td>${item.reply}</td>
-        <td>${item.type}</td>
-        <td>
-          <button onclick="deleteReply('${item.message}')">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.message || ""}</td>
+          <td>${item.reply || ""}</td>
+          <td>${item.type || ""}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.log("Brain load error:", err);
+  }
 }
 
 /* =========================
@@ -75,29 +77,34 @@ async function loadBrain() {
 ========================= */
 async function loadLogs() {
 
-  const res = await fetch(SCRIPT_URL + "?action=logs");
-  const data = await res.json();
+  try {
+    const res = await fetch(SCRIPT_URL + "?action=logs");
+    const data = await res.json();
 
-  const arr = Array.isArray(data) ? data : [];
+    const arr = Array.isArray(data) ? data : [];
 
-  const tbody = document.getElementById("logsTable");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("logsTable");
+    tbody.innerHTML = "";
 
-  arr.forEach(row => {
+    arr.forEach(row => {
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-      </tr>
-    `;
-  });
+      tbody.innerHTML += `
+        <tr>
+          <td>${row[0] || ""}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[2] || ""}</td>
+          <td>${row[3] || ""}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.log("Logs load error:", err);
+  }
 }
 
 /* =========================
-   ADD REPLY
+   ADD BRAIN ENTRY
 ========================= */
 async function addReply() {
 
@@ -113,7 +120,7 @@ async function addReply() {
 }
 
 /* =========================
-   DELETE
+   DELETE ENTRY
 ========================= */
 function deleteReply(message) {
 
@@ -131,18 +138,17 @@ function checkTelegram() {
 
   script.src =
     SCRIPT_URL +
-    "?action=updates" +
-    "&callback=handleTelegram";
+    "?action=updates&callback=handleTelegram";
 
   document.body.appendChild(script);
 }
 
 /* =========================
-   TELEGRAM HANDLER (JSONP)
+   TELEGRAM HANDLER
 ========================= */
 function handleTelegram(res) {
 
-  if (!res.result) return;
+  if (!res || !res.result) return;
 
   res.result.forEach(update => {
 
@@ -154,52 +160,69 @@ function handleTelegram(res) {
 
     const chatId = update.message.chat.id;
 
-    const msg = (update.message.text || "").toLowerCase().trim();
+    const msg =
+      (update.message.text || "")
+        .toLowerCase()
+        .trim();
 
     const username =
       update.message.from.username ||
       update.message.from.first_name ||
-      "unknown";
+      "user";
 
     matchAndReply(chatId, msg, username);
   });
 }
+
 /* =========================
-   MATCH BRAIN + REPLY
+   MATCH + SEND REPLY
 ========================= */
 async function matchAndReply(chatId, msg, username) {
 
-  const res = await fetch(SCRIPT_URL + "?action=read");
-  const brain = await res.json();
+  try {
 
-  let reply = null;
+    const res = await fetch(SCRIPT_URL + "?action=read");
+    const brain = await res.json();
 
-  for (const item of brain) {
+    const arr = Array.isArray(brain) ? brain : [];
 
-    const key = (item.message || "").toLowerCase();
+    let reply = null;
 
-    if (item.type === "exact" && msg === key) {
-      reply = item.reply;
-      break;
+    for (const item of arr) {
+
+      const key = (item.message || "").toLowerCase();
+
+      if (item.type === "exact" && msg === key) {
+        reply = item.reply;
+        break;
+      }
+
+      if (item.type === "contains" && msg.includes(key)) {
+        reply = item.reply;
+        break;
+      }
     }
 
-    if (item.type === "contains" && msg.includes(key)) {
-      reply = item.reply;
-      break;
-    }
+    if (!reply) return;
+
+    await fetch(
+      SCRIPT_URL +
+      "?action=send" +
+      "&chatId=" + chatId +
+      "&text=" + encodeURIComponent(reply) +
+      "&user=" + encodeURIComponent(username) +
+      "&message=" + encodeURIComponent(msg)
+    );
+
+    console.log("Reply sent:", reply);
+
+    loadLogs();
+
+  } catch (err) {
+    console.log("Match error:", err);
   }
-
-  if (!reply) return;
-
-  await fetch(
-    SCRIPT_URL +
-    "?action=send" +
-    "&chatId=" + chatId +
-    "&text=" + encodeURIComponent(reply) +
-    "&user=" + encodeURIComponent(username) +
-    "&message=" + encodeURIComponent(msg)
-  );
 }
+
 /* =========================
    INIT
 ========================= */
