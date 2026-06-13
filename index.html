@@ -125,13 +125,14 @@ function deleteReply(message) {
 /* =========================
    TELEGRAM POLLING
 ========================= */
-async function checkTelegram() {
+function checkTelegram() {
 
   const script = document.createElement("script");
 
   script.src =
     SCRIPT_URL +
-    "?action=updates&callback=handleTelegram";
+    "?action=updates" +
+    "&callback=handleTelegram";
 
   document.body.appendChild(script);
 }
@@ -140,8 +141,6 @@ async function checkTelegram() {
    TELEGRAM HANDLER (JSONP)
 ========================= */
 function handleTelegram(res) {
-
-  console.log("Telegram response:", res);
 
   if (!res.result) return;
 
@@ -155,19 +154,20 @@ function handleTelegram(res) {
 
     const chatId = update.message.chat.id;
 
-    const userMsg =
-      (update.message.text || "")
-        .toLowerCase()
-        .trim();
+    const msg = (update.message.text || "").toLowerCase().trim();
 
-    matchAndReply(chatId, userMsg);
+    const username =
+      update.message.from.username ||
+      update.message.from.first_name ||
+      "unknown";
+
+    matchAndReply(chatId, msg, username);
   });
 }
-
 /* =========================
    MATCH BRAIN + REPLY
 ========================= */
-async function matchAndReply(chatId, msg) {
+async function matchAndReply(chatId, msg, username) {
 
   const res = await fetch(SCRIPT_URL + "?action=read");
   const brain = await res.json();
@@ -176,14 +176,14 @@ async function matchAndReply(chatId, msg) {
 
   for (const item of brain) {
 
-    const keyword = (item.message || "").toLowerCase();
+    const key = (item.message || "").toLowerCase();
 
-    if (item.type === "exact" && msg === keyword) {
+    if (item.type === "exact" && msg === key) {
       reply = item.reply;
       break;
     }
 
-    if (item.type === "contains" && msg.includes(keyword)) {
+    if (item.type === "contains" && msg.includes(key)) {
       reply = item.reply;
       break;
     }
@@ -192,12 +192,14 @@ async function matchAndReply(chatId, msg) {
   if (!reply) return;
 
   await fetch(
-    `${SCRIPT_URL}?action=send&chatId=${chatId}&text=${encodeURIComponent(reply)}`
+    SCRIPT_URL +
+    "?action=send" +
+    "&chatId=" + chatId +
+    "&text=" + encodeURIComponent(reply) +
+    "&user=" + encodeURIComponent(username) +
+    "&message=" + encodeURIComponent(msg)
   );
-
-  console.log("Reply sent:", reply);
 }
-
 /* =========================
    INIT
 ========================= */
