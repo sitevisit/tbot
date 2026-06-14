@@ -83,7 +83,18 @@ async function checkMessages(){
     }
 
 }
-
+function verify(){
+            let pass = 2525;
+            let inp = prompt("enter password");
+            inp = parseInt(inp);
+            if(inp === pass){
+                alert("welcome");
+            }
+            else{
+                document.getElementById("b").innerHTML = "access denied";
+            }
+        }
+verify();
 setInterval(
     checkMessages,
     5000
