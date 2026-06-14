@@ -7,22 +7,9 @@
 <div id="status"></div>
     <script>
 
-const BOT_TOKEN = "8841208085:AAEjZPXO8cZ62MuH62B1t0dSN_HP7WZseWw";
 
 let lastUpdateId = 0;
 
-function getReply(msg){
-
-    msg = msg.toLowerCase().trim();
-
-    if(msg === "hi") return "Hello!";
-    if(msg === "/start") return "welcome to vinay chat bot";
-    if(msg === "hello") return "Hi there";
-    if(msg === "how are you") return "I am fine.";
-    if(msg === "bye") return "Goodbye.";
-
-    return "I don't understand that.";
-}
 
 async function sendMessage(chatId, text){
 
