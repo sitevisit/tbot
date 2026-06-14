@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       reply = "Hello!";
 
     else if (msg === "/start")
-      reply = "welcome to vinay chat bot";
+      reply = "welcome to vinay's chat bot";
 
     else if (msg === "hello")
       reply = "Hi there";
@@ -40,7 +40,75 @@ export default async function handler(req, res) {
 
     else if (msg === "bye")
       reply = "Goodbye.";
+    else if (msg === "good morning")
+  reply = "Good Morning!";
 
+else if (msg === "good afternoon")
+  reply = "Good Afternoon!";
+
+else if (msg === "good evening")
+  reply = "Good Evening!";
+
+else if (msg === "good night")
+  reply = "Good Night!";
+
+else if (msg === "thanks")
+  reply = "You're welcome!";
+
+else if (msg === "thank you")
+  reply = "You're welcome!";
+
+else if (msg === "what is your name")
+  reply = "My name is Vinay Bot.";
+
+else if (msg === "who made you")
+  reply = "Vinay created me.";
+
+else if (msg === "how old are you")
+  reply = "I am a bot, I don't have an age.";
+
+else if (msg === "where are you from")
+  reply = "I live on the internet.";
+
+else if (msg === "what can you do")
+  reply = "I can chat with you.";
+
+else if (msg === "ok")
+  reply = "Okay!";
+
+else if (msg === "yes")
+  reply = "Great!";
+
+else if (msg === "no")
+  reply = "Alright.";
+
+else if (msg === "cool")
+  reply = "Glad you think so!";
+
+else if (msg === "haha")
+  reply = "😂";
+
+else if (msg === "help")
+  reply = "Try saying hi, hello, good morning, or ask my name.";
+
+else if (msg === "bye")
+  reply = "Goodbye! Have a nice day.";
+
+else if (msg === "see you")
+  reply = "See you later!";
+
+else if (msg === "love you")
+  reply = "Thank you ❤️";
+
+else if (msg === "who are you")
+  reply = "I am Vinay's Bot.";
+
+else if (msg === "tell me a joke")
+  reply = "Why do programmers prefer dark mode? Because light attracts bugs! 😄";
+else if (msg.includes("fuck"))
+  reply = "fuck you. chootya";
+esle if (msg.includes("dundayya"))
+  reply = "why you are including gay person dundayya in chat");
     await fetch(
       `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
       {
