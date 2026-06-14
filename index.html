@@ -9,6 +9,63 @@
 <div id="status"></div>
 
 <script>
+    let lastUpdateId = 0;
+async function sendMessage(chatId, text){
+
+    await fetch(
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`
+    );
+
+}
+
+async function checkMessages(){
+
+    try{
+
+        const response = await fetch(
+            `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`
+        );
+
+        const data = await response.json();
+
+        if(data.result.length === 0){
+            return;
+        }
+
+        const latest =
+            data.result[data.result.length - 1];
+
+        if(latest.update_id > lastUpdateId){
+
+            lastUpdateId = latest.update_id;
+            const fname = latest.message.from.first_name+" "+latest.message.from.last_name;
+            const chatId =
+                latest.message.chat.id;
+
+            const msg =
+                latest.message.text || "";
+
+            const reply =
+                getReply(msg);
+            console.log("sent to "+fname);
+            await sendMessage(
+                chatId,
+                reply
+            );
+            document.getElementById(
+                "status"
+            ).innerHTML +=
+            "Recieved: " + msg+"<br>By: "+fname+"<br>Replied: "+reply+"<br><hr>";
+
+        }
+
+    }
+    catch(err){
+
+        console.log(err);
+
+    }
+    }
 
 </script>
 
