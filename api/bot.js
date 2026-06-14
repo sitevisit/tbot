@@ -107,8 +107,8 @@ else if (msg === "tell me a joke")
   reply = "Why do programmers prefer dark mode? Because light attracts bugs! 😄";
 else if (msg.includes("fuck"))
   reply = "fuck you. chootya";
-esle if (msg.includes("dundayya"))
-  reply = "why you are including gay person dundayya in chat");
+else if (msg.includes("dundayya"))
+  reply = "why you are including gay person dundayya in chat";
     await fetch(
       `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
       {
