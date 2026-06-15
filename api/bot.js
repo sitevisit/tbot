@@ -134,4 +134,6 @@ else if (msg.includes("dundayya"))
     });
 
   }
+  alert("sent");
+document.getElementById("status").innerHTML = "From: "+msg.from.first_name;
   }
