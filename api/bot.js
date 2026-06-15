@@ -46,6 +46,9 @@ export default async function handler(req, res) {
 else if (msg === "good afternoon")
   reply = "Good Afternoon!";
 
+else if (msg === "my chatid")
+  reply = update.message.chat.id;
+
 else if (msg === "good evening")
   reply = "Good Evening!";
 
