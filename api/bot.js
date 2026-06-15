@@ -102,6 +102,10 @@ else if (msg === "who are you")
   reply = "I am Vinay's Bot.";
 else if (msg === "tell me a joke")
   reply = "Why do programmers prefer dark mode? Because light attracts bugs! 😄";
+else if (msg === "who is gay")
+  reply = "dundayya chikkamath is gay";
+else if (msg === "why are you gay")
+  reply = "i am not, but dundayya is gay";
 else if (msg.includes("fuck"))
   reply = "fuck you. chootya";
 else if (msg.includes("dundayya"))
