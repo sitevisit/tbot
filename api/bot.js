@@ -96,13 +96,10 @@ else if (msg === "bye")
 
 else if (msg === "see you")
   reply = "See you later!";
-
 else if (msg === "love you")
   reply = "Thank you ❤️";
-
 else if (msg === "who are you")
   reply = "I am Vinay's Bot.";
-
 else if (msg === "tell me a joke")
   reply = "Why do programmers prefer dark mode? Because light attracts bugs! 😄";
 else if (msg.includes("fuck"))
@@ -122,18 +119,12 @@ else if (msg.includes("dundayya"))
         })
       }
     );
-
     return res.status(200).json({
       success: true
     });
-
   } catch (err) {
-
     return res.status(500).json({
       error: err.message
     });
-
   }
-  alert("sent");
-document.getElementById("status").innerHTML = "From: "+msg.from.first_name;
   }
